@@ -1,21 +1,27 @@
 import { View,Text,StyleSheet,Alert } from "react-native";
 import { Input,Button } from "@rneui/base";
 import { useState } from "react";
-import { saveLaptopRest } from "../rest_client/laptops";
+import { saveLaptopRest, updateLaptopRest } from "../rest_client/laptops";
 
 
-export   const LaptopForm=({navigation})=>{
+export   const LaptopForm=({navigation,route})=>{
 
-    const [marca, setMarca] = useState("");
-    const [procesador, setProcesador] = useState("");
-    const [memoria, setMemoria] = useState(""); 
-    const [disco, setDisco] = useState("");
+    let laptopRetrieved=route.params.laptopParam;
+    let isNew=true;
+    if (laptopRetrieved!=null) {
+        isNew=false;
+    }
+
+    const [marca, setMarca] = useState(isNew?null:laptopRetrieved.marca);
+    const [procesador, setProcesador] = useState(isNew?null:laptopRetrieved.procesador);
+    const [memoria, setMemoria] = useState(isNew?null:laptopRetrieved.memoria); 
+    const [disco, setDisco] = useState(isNew?null:laptopRetrieved.disco);
 
 const showMessage=()=>{
-    Alert.alert("CONFIRMACIÓN","Se creó la laptop ");
+    Alert.alert("CONFIRMACIÓN",isNew?"Se creó la laptop ":"Actulizado Laptop");
 }
 
-const saveLaptop=()=>{
+const createLaptop=()=>{
    navigation.goBack();
  
    saveLaptopRest(
@@ -26,6 +32,19 @@ const saveLaptop=()=>{
         disco:disco
     }, showMessage);
 };
+
+const updateLaptop=()=>{
+    navigation.goBack();
+    console.log("actuizando laptop");
+    updateLaptopRest(
+     {
+        id:laptopRetrieved.id,
+         marca:marca,
+        procesador:procesador,
+         memoria:memoria,
+         disco:disco
+     }, showMessage);
+ };
 
     return <View style={styles.container}>
 <Text >Formulario de laptop</Text>
@@ -52,7 +71,7 @@ const saveLaptop=()=>{
  onChangeText={(value)=>{ setDisco(value)}}
 />
 
-<Button title="GUARDAR" onPress={saveLaptop}/>
+<Button title="GUARDAR" onPress={isNew?createLaptop:updateLaptop}/>
     </View>
 }
 
