@@ -30,7 +30,7 @@ export const saveLaptopRest=(laptop,fnShowMessage)=>{
             URL+"laptops",config
         ).then(response=>response.json())
         .then((body)=>{ 
-            fnShowMessage();
+            fnShowMessage("Se creó un nuevo registro");
             console.log(body);
     
         });
@@ -52,8 +52,22 @@ export const saveLaptopRest=(laptop,fnShowMessage)=>{
                 URL+"laptops/"+laptop.id,config
             ).then(response=>response.json())
             .then((body)=>{ 
-                fnShowMessage();
+                fnShowMessage("Se actualizó el registro");
                 console.log(body);
         
             });
         }
+
+        export const deleteLaptopRest=(laptop,fnShowMessage)=>{
+            const config={
+                method:"DELETE"
+            }
+                fetch(
+                    URL+"laptops/"+laptop.id,config
+                ).then(response=>response.json())
+                .then((body)=>{ 
+                    fnShowMessage("Se ha eliminado la laptop");
+                    console.log(body);
+            
+                });
+            }
